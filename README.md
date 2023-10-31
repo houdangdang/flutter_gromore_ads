@@ -14,9 +14,13 @@
 <a href="https://flutterads.github.io/site/"><img src="https://raw.githubusercontent.com/FlutterAds/.github/main/gromore_pro_site.png" alt="gromore"/></a>
 </p>
 
-## Gromore 有什么特点？
+## GroMore 有什么特点？
 
 可以帮你提升广告收益，但是需要技术和运营都懂，不懂可以（[🧑🏻‍💻咨询我](https://flutterads.github.io/site/)）。
+
+## GroMore 支持哪些广告平台？
+
+![广告平台](https://raw.githubusercontent.com/FlutterAds/site/master/images/gromore/gromore_ads.png)
 
 ## 插件特点
 - 🔨 接入简单快速（封装原生端配置，仅需引入即可开始）
