@@ -14,6 +14,7 @@ import com.bytedance.sdk.openadsdk.mediation.init.MediationConfig;
 import com.bytedance.sdk.openadsdk.mediation.init.MediationPrivacyConfig;
 import com.zero.flutter_gromore_ads.page.AdSplashActivity;
 import com.zero.flutter_gromore_ads.page.InterstitialPage;
+import com.zero.flutter_gromore_ads.page.RewardVideoAdPage;
 import com.zero.flutter_gromore_ads.page.NativeViewFactory;
 import com.zero.flutter_gromore_ads.utils.FileUtils;
 
@@ -46,6 +47,8 @@ public class PluginDelegate implements MethodChannel.MethodCallHandler, EventCha
 
     // Banner View
     public static final String KEY_BANNER_VIEW = "flutter_gromore_ads_banner";
+    // Feed View
+    public static final String KEY_FEED_VIEW = "flutter_gromore_ads_feed";
     // 广告参数
     public static final String KEY_POSID = "posId";
     // logo 参数
@@ -83,6 +86,12 @@ public class PluginDelegate implements MethodChannel.MethodCallHandler, EventCha
             showSplashAd(call, result);
         } else if ("showInterstitialAd".equals(method)) {
             showInterstitialAd(call, result);
+        } else if ("showRewardVideoAd".equals(method)) {
+            showRewardVideoAd(call, result);
+        } else if ("loadFeedAd".equals(method)) {
+            loadFeedAd(call, result);
+        } else if ("clearFeedAd".equals(method)) {
+            clearFeedAd(call, result);
         } else {
             result.notImplemented();
         }
@@ -130,6 +139,15 @@ public class PluginDelegate implements MethodChannel.MethodCallHandler, EventCha
         bind.getPlatformViewRegistry()
                 .registerViewFactory(KEY_BANNER_VIEW, new NativeViewFactory(KEY_BANNER_VIEW, this));
     }
+
+    /**
+     * 展示 Feed 信息流广告
+     */
+    public void registerFeedView() {
+//        bind.getPlatformViewRegistry()
+//                .registerViewFactory(KEY_FEED_VIEW, new NativeViewFactory(KEY_FEED_VIEW, this));
+    }
+
 
     /**
      * 请求权限
@@ -276,7 +294,7 @@ public class PluginDelegate implements MethodChannel.MethodCallHandler, EventCha
     }
 
     /**
-     * 显示插屏广告
+     * 显示插屏(半屏、全屏)广告
      *
      * @param call   MethodCall
      * @param result Result
@@ -285,6 +303,45 @@ public class PluginDelegate implements MethodChannel.MethodCallHandler, EventCha
         InterstitialPage adPage = new InterstitialPage();
         adPage.showAd(activity, call);
         result.success(true);
+    }
+
+    /**
+     * 显示激励视频广告
+     *
+     * @param call   MethodCall
+     * @param result Result
+     */
+    public void showRewardVideoAd(MethodCall call, MethodChannel.Result result) {
+        RewardVideoAdPage adPage = new RewardVideoAdPage();
+        adPage.showAd(activity, call);
+        result.success(true);
+    }
+
+    /**
+     * 加载信息流广告列表
+     *
+     * @param call   MethodCall
+     * @param result Result
+     */
+    public void loadFeedAd(MethodCall call, MethodChannel.Result result) {
+//        FeedAdLoad feedAd = new FeedAdLoad();
+//        feedAd.loadFeedAdList(activity, call, result);
+    }
+
+    /**
+     * 删除信息流广告列表
+     *
+     * @param call   MethodCall
+     * @param result Result
+     */
+    public void clearFeedAd(MethodCall call, MethodChannel.Result result) {
+//        List<Integer> adList = call.argument("list");
+//        if (adList != null) {
+//            for (int ad : adList) {
+//                FeedAdManager.getInstance().removeAd(ad);
+//            }
+//        }
+//        result.success(true);
     }
 
 }
