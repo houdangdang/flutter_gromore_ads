@@ -27,7 +27,7 @@ class AdFeedWidget extends StatefulWidget {
 class _AdFeedWidgetState extends State<AdFeedWidget>
     with AutomaticKeepAliveClientMixin {
   // View 类型
-  final String viewType = 'flutter_pangle_ads_feed';
+  final String viewType = 'flutter_gromore_ads_feed';
   // 创建参数
   late Map<String, dynamic> creationParams;
   // 通道
