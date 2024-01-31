@@ -12,14 +12,20 @@ import com.bytedance.sdk.openadsdk.TTAdSdk;
 import com.bytedance.sdk.openadsdk.TTCustomController;
 import com.bytedance.sdk.openadsdk.mediation.init.MediationConfig;
 import com.bytedance.sdk.openadsdk.mediation.init.MediationPrivacyConfig;
+import com.zero.flutter_gromore_ads.load.FeedAdLoad;
+import com.zero.flutter_gromore_ads.load.FeedAdManager;
 import com.zero.flutter_gromore_ads.page.AdSplashActivity;
 import com.zero.flutter_gromore_ads.page.InterstitialPage;
 import com.zero.flutter_gromore_ads.page.RewardVideoAdPage;
 import com.zero.flutter_gromore_ads.page.NativeViewFactory;
 import com.zero.flutter_gromore_ads.utils.FileUtils;
 
-import org.json.JSONException;
+import org.json.JSONArray;
 import org.json.JSONObject;
+import org.json.JSONException;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import io.flutter.BuildConfig;
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
@@ -92,6 +98,8 @@ public class PluginDelegate implements MethodChannel.MethodCallHandler, EventCha
             loadFeedAd(call, result);
         } else if ("clearFeedAd".equals(method)) {
             clearFeedAd(call, result);
+        } else if ("setUserExtData".equals(method)) {
+            setUserExtData(call, result);
         } else {
             result.notImplemented();
         }
@@ -144,8 +152,8 @@ public class PluginDelegate implements MethodChannel.MethodCallHandler, EventCha
      * 展示 Feed 信息流广告
      */
     public void registerFeedView() {
-//        bind.getPlatformViewRegistry()
-//                .registerViewFactory(KEY_FEED_VIEW, new NativeViewFactory(KEY_FEED_VIEW, this));
+        bind.getPlatformViewRegistry()
+                .registerViewFactory(KEY_FEED_VIEW, new NativeViewFactory(KEY_FEED_VIEW, this));
     }
 
 
@@ -324,8 +332,8 @@ public class PluginDelegate implements MethodChannel.MethodCallHandler, EventCha
      * @param result Result
      */
     public void loadFeedAd(MethodCall call, MethodChannel.Result result) {
-//        FeedAdLoad feedAd = new FeedAdLoad();
-//        feedAd.loadFeedAdList(activity, call, result);
+        FeedAdLoad feedAd = new FeedAdLoad();
+        feedAd.loadFeedAdList(activity, call, result);
     }
 
     /**
@@ -335,13 +343,39 @@ public class PluginDelegate implements MethodChannel.MethodCallHandler, EventCha
      * @param result Result
      */
     public void clearFeedAd(MethodCall call, MethodChannel.Result result) {
-//        List<Integer> adList = call.argument("list");
-//        if (adList != null) {
-//            for (int ad : adList) {
-//                FeedAdManager.getInstance().removeAd(ad);
-//            }
-//        }
-//        result.success(true);
+        List<Integer> adList = call.argument("list");
+        if (adList != null) {
+            for (int ad : adList) {
+                FeedAdManager.getInstance().removeAd(ad);
+            }
+        }
+        result.success(true);
     }
 
+    /**
+     * 个性化推荐广告开关
+     *
+     * @param call   MethodCall
+     * @param result Result
+     */
+    public void setUserExtData(MethodCall call, MethodChannel.Result result) {
+        try {
+            String personalTypeValue = call.argument("personalAdsType");
+
+            JSONArray jsonArray = new JSONArray();
+            JSONObject personalObject = new JSONObject();
+            personalObject.put("name", "personal_ads_type");
+            personalObject.put("value", personalTypeValue);
+            jsonArray.put(personalObject);
+
+            TTAdConfig ttAdConfig = new TTAdConfig.Builder()
+                    .data(jsonArray.toString())
+                    .build();
+            TTAdSdk.updateAdConfig(ttAdConfig);
+            result.success(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.success(false);
+        }
+    }
 }
