@@ -34,7 +34,7 @@ public class RewardVideoAdPage extends BaseAdPage implements TTAdNative.RewardVi
         customData = call.argument("customData");
         userId = call.argument("userId");
         // 配置广告
-        adSlot = new AdSlot.Builder()
+        adslot = new AdSlot.Builder()
                 .setCodeId(posId)
                 .setExpressViewAcceptedSize(500, 500)
                 .setUserID(userId)//tag_id
