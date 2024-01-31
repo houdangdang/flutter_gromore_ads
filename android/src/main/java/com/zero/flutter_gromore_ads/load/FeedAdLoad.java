@@ -40,13 +40,13 @@ public class FeedAdLoad extends BaseAdPage implements TTAdNative.NativeExpressAd
         int expressViewWidth = call.argument("width");
         int expressViewHeight = call.argument("height");
         int count = call.argument("count");
-        adSlot = new AdSlot.Builder()
+        adslot = new AdSlot.Builder()
                 .setCodeId(posId)
                 .setAdCount(count)
                 .setSupportDeepLink(true)
                 .setExpressViewAcceptedSize(expressViewWidth, expressViewHeight)
                 .build();
-        adNativeLoader.loadNativeExpressAd(adSlot,this);
+        adNativeLoader.loadNativeExpressAd(adslot, this);
     }
 
     @Override
