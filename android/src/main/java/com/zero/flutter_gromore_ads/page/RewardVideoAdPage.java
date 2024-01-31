@@ -6,14 +6,13 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import com.bytedance.sdk.openadsdk.AdSlot;
-import com.bytedance.sdk.openadsdk.MediationConstant;
-import com.bytedance.sdk.openadsdk.MediationAdSlot;
 import com.bytedance.sdk.openadsdk.TTAdConstant;
 import com.bytedance.sdk.openadsdk.TTAdManager;
 import com.bytedance.sdk.openadsdk.TTAdNative;
 import com.bytedance.sdk.openadsdk.TTRewardVideoAd;
 import com.bytedance.sdk.openadsdk.TTAppDownloadListener;
 import com.zero.flutter_gromore_ads.event.AdEventAction;
+import com.zero.flutter_gromore_ads.event.AdRewardEvent;
 import com.zero.flutter_gromore_ads.utils.RewardBundleModel;
 
 import io.flutter.plugin.common.MethodCall;
@@ -36,14 +35,10 @@ public class RewardVideoAdPage extends BaseAdPage implements TTAdNative.RewardVi
         userId = call.argument("userId");
         // 配置广告
         adSlot = new AdSlot.Builder()
-                .setCodeId(this.posId)
-                .setOrientation(TTAdConstant.VERTICAL)
-                .setMediationAdSlot(new MediationAdSlot
-                        .Builder()
-                        .setExtraObject(MediationConstant.ADN_PANGLE, "pangleRewardCustomData")
-                        .setExtraObject(MediationConstant.ADN_GDT, "gdtRewardCustomData")
-                        .setExtraObject(MediationConstant.ADN_BAIDU, "baiduRewardCustomData")
-                        .build())
+                .setCodeId(posId)
+                .setExpressViewAcceptedSize(500, 500)
+                .setUserID(userId)//tag_id
+                .setMediaExtra(customData) //附加参数
                 .build();
         // 加载广告
         adNativeLoader.loadRewardVideoAd(adslot, this);
