@@ -7,7 +7,9 @@ import androidx.annotation.NonNull;
 
 import com.bytedance.sdk.openadsdk.AdSlot;
 import com.bytedance.sdk.openadsdk.TTAdNative;
-import com.bytedance.sdk.openadsdk.TTNativeExpressAd;
+import com.bytedance.sdk.openadsdk.TTFeedAd;
+import com.bytedance.sdk.openadsdk.mediation.MediationConstant;
+import com.bytedance.sdk.openadsdk.mediation.ad.MediationAdSlot;
 import com.zero.flutter_gromore_ads.event.AdEventAction;
 import com.zero.flutter_gromore_ads.page.BaseAdPage;
 
@@ -20,8 +22,8 @@ import io.flutter.plugin.common.MethodChannel;
 /**
  * 信息流加载对象
  */
-public class FeedAdLoad extends BaseAdPage implements TTAdNative.NativeExpressAdListener {
-    private final String TAG = FeedAdManager.class.getSimpleName();
+public class FeedAdLoad extends BaseAdPage implements TTAdNative.FeedAdListener {
+    private final String TAG =  "FeedAdLoad";// FeedAdManager.class.getSimpleName();
     private MethodChannel.Result result;
 
     /**
@@ -30,23 +32,26 @@ public class FeedAdLoad extends BaseAdPage implements TTAdNative.NativeExpressAd
      * @param result
      */
     public void loadFeedAdList(Activity activity, @NonNull MethodCall call, @NonNull MethodChannel.Result result) {
+        Log.i(TAG, "loadFeedAdList");
         this.result=result;
         showAd(activity,call);
     }
 
     @Override
     public void loadAd(@NonNull MethodCall call) {
+        Log.i(TAG, "loadAd");
         // 获取请求模板广告素材的尺寸
         int expressViewWidth = call.argument("width");
         int expressViewHeight = call.argument("height");
         int count = call.argument("count");
+        Log.i("FeedAdLoad", "expressViewWidth: "+ expressViewWidth + "expressViewHeight: " + expressViewHeight);
         adslot = new AdSlot.Builder()
                 .setCodeId(posId)
+                .setExpressViewAcceptedSize(expressViewWidth, expressViewHeight)
                 .setAdCount(count)
                 .setSupportDeepLink(true)
-                .setExpressViewAcceptedSize(expressViewWidth, expressViewHeight)
                 .build();
-        adNativeLoader.loadNativeExpressAd(adslot, this);
+        adNativeLoader.loadFeedAd(adslot, this);
     }
 
     @Override
@@ -56,20 +61,20 @@ public class FeedAdLoad extends BaseAdPage implements TTAdNative.NativeExpressAd
         this.result.error(""+i,s,s);
     }
 
-
     @Override
-    public void onNativeExpressAdLoad(List<TTNativeExpressAd> list) {
+    public void onFeedAdLoad(List<TTFeedAd> list) {
         List<Integer> adResultList=new ArrayList<>();
-        Log.i(TAG, "onNativeExpressAdLoad");
+        Log.i(TAG, "onFeedAdLoad" + adResultList);
         if (list == null || list.size() == 0) {
             this.result.success(adResultList);
             return;
         }
-        for (TTNativeExpressAd adItem : list) {
+        for (TTFeedAd adItem : list) {
             int key=adItem.hashCode();
             adResultList.add(key);
             FeedAdManager.getInstance().putAd(key,adItem);
         }
+        Log.i(TAG, "onFeedAdLoad2222" + adResultList);
         // 添加广告事件
         sendEvent(AdEventAction.onAdLoaded);
         this.result.success(adResultList);

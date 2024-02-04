@@ -10,7 +10,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.bytedance.sdk.openadsdk.TTAdDislike;
-import com.bytedance.sdk.openadsdk.TTNativeExpressAd;
+import com.bytedance.sdk.openadsdk.mediation.ad.MediationExpressRenderListener;
+import com.bytedance.sdk.openadsdk.mediation.manager.MediationNativeManager;
+import com.bytedance.sdk.openadsdk.TTFeedAd;
+import com.bytedance.sdk.openadsdk.TTNativeAd;
 import com.zero.flutter_gromore_ads.PluginDelegate;
 import com.zero.flutter_gromore_ads.event.AdEventAction;
 import com.zero.flutter_gromore_ads.load.FeedAdManager;
@@ -25,13 +28,13 @@ import io.flutter.plugin.platform.PlatformView;
 /**
  * Feed 信息流广告 View
  */
-class AdFeedView extends BaseAdPage implements PlatformView, TTNativeExpressAd.AdInteractionListener {
+class AdFeedView extends BaseAdPage implements PlatformView, TTNativeAd.AdInteractionListener, MediationExpressRenderListener {
     private final String TAG = AdFeedView.class.getSimpleName();
     @NonNull
     private final FrameLayout frameLayout;
     private final PluginDelegate pluginDelegate;
     private int id;
-    private TTNativeExpressAd fad;
+    private TTFeedAd fad;
     private MethodChannel methodChannel;
 
 
@@ -60,17 +63,24 @@ class AdFeedView extends BaseAdPage implements PlatformView, TTNativeExpressAd.A
     @Override
     public void loadAd(@NonNull MethodCall call) {
         fad = FeedAdManager.getInstance().getAd(Integer.parseInt(this.posId));
-        if (fad != null) {
-            View adView = fad.getExpressAdView();
+        if (fad == null) { return; }
+        bindDislikeAction(fad);
+        MediationNativeManager manager = fad.getMediationManager();
+        if (manager == null) { return; }
+        if (manager.isExpress()) {
+            // --- 模板feed流广告
+            View adView = fad.getAdView();
             if (adView.getParent() != null) {
                 ((ViewGroup) adView.getParent()).removeAllViews();
             }
             frameLayout.removeAllViews();
             FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             frameLayout.addView(adView, params);
-            fad.setExpressInteractionListener(this);
-            bindDislikeAction(fad);
+            fad.setExpressRenderListener(this);
             fad.render();
+        } else {
+            // --- 自渲染feed流广告
+            Log.i(TAG, "自渲染feed流广告");
         }
     }
 
@@ -94,26 +104,35 @@ class AdFeedView extends BaseAdPage implements PlatformView, TTNativeExpressAd.A
         setFlutterViewSize(0f, 0f);
     }
 
-    @Override
-    public void onAdDismiss() {
-        Log.i(TAG, "onAdDismiss");
-        // 添加广告事件
-        sendEvent(AdEventAction.onAdClosed);
-        disposeAd();
-    }
+    // -- AdInteractionListener -- //
 
     @Override
-    public void onAdClicked(View view, int i) {
+    public void onAdClicked(View view, TTNativeAd ttNativeAd) {
         Log.i(TAG, "onAdClicked");
         // 添加广告事件
         sendEvent(AdEventAction.onAdClicked);
     }
 
     @Override
-    public void onAdShow(View view, int i) {
+    public void onAdCreativeClick(View view, TTNativeAd ttNativeAd) {
+        Log.i(TAG, "onAdCreativeClick");
+    }
+
+    @Override
+    public void onAdShow(TTNativeAd ttNativeAd) {
         Log.i(TAG, "onAdShow");
         // 添加广告事件
         sendEvent(AdEventAction.onAdExposure);
+    }
+
+    // ---- MediationExpressRenderListener ---- //
+
+    @Override
+    public void onRenderSuccess(View view, float width, float height, boolean b) {
+        Log.i(TAG, "onRenderSuccess v:" + width + " v1:" + height);
+        // 添加广告事件
+        sendEvent(AdEventAction.onAdPresent);
+        setFlutterViewSize(width, height);
     }
 
     @Override
@@ -126,11 +145,17 @@ class AdFeedView extends BaseAdPage implements PlatformView, TTNativeExpressAd.A
     }
 
     @Override
-    public void onRenderSuccess(View view, float width, float height) {
-        Log.i(TAG, "onRenderSuccess v:" + width + " v1:" + height);
+    public void onAdClick() {
+        Log.i(TAG, "onAdClicked");
         // 添加广告事件
-        sendEvent(AdEventAction.onAdPresent);
-        setFlutterViewSize(width, height);
+        sendEvent(AdEventAction.onAdClicked);
+    }
+
+    @Override
+    public void onAdShow() {
+        Log.i(TAG, "onAdShow");
+        // 添加广告事件
+        sendEvent(AdEventAction.onAdExposure);
     }
 
     /**
@@ -155,26 +180,25 @@ class AdFeedView extends BaseAdPage implements PlatformView, TTNativeExpressAd.A
      *
      * @param ad 广告 View
      */
-    private void bindDislikeAction(TTNativeExpressAd ad) {
-        // 使用默认Dislike
-        final TTAdDislike ttAdDislike = ad.getDislikeDialog(activity);
-        if (ttAdDislike != null) {
-            ttAdDislike.setDislikeInteractionCallback(new TTAdDislike.DislikeInteractionCallback() {
-                @Override
-                public void onShow() {
+    private void bindDislikeAction(TTFeedAd ad) {
+        ad.setDislikeCallback(activity, new TTAdDislike.DislikeInteractionCallback() {
+            @Override
+            public void onShow() {
 
-                }
+            }
 
-                @Override
-                public void onSelected(int position, String value, boolean enforce) {
-                    onAdDismiss();
-                }
+            @Override
+            public void onSelected(int position, String value, boolean enforce) {
+                Log.i(TAG, "onAdDismiss");
+                // 添加广告事件
+                sendEvent(AdEventAction.onAdClosed);
+                disposeAd();
+            }
 
-                @Override
-                public void onCancel() {
+            @Override
+            public void onCancel() {
 
-                }
-            });
-        }
+            }
+        });
     }
 }

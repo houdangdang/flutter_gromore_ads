@@ -208,12 +208,14 @@ public class PluginDelegate implements MethodChannel.MethodCallHandler, EventCha
                     .customController(getTTCustomController(limitPersonalAds == 0))
                     .build();
         }
+
+
         // 初始化 SDK
         TTAdSdk.init(activity.getApplicationContext(),gmPangleOption);
         TTAdSdk.start(new TTAdSdk.Callback() {
             @Override
             public void success() {
-                result.success(TTAdSdk.isInitSuccess());
+                result.success(TTAdSdk.isSdkReady());
             }
 
             @Override

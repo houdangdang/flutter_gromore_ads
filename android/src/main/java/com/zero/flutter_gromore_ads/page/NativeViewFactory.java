@@ -1,6 +1,7 @@
 package com.zero.flutter_gromore_ads.page;
 
 import android.content.Context;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -34,6 +35,7 @@ public class NativeViewFactory extends PlatformViewFactory {
         if (this.viewName.equals(PluginDelegate.KEY_BANNER_VIEW)) {
             return new AdBannerView(context, id, creationParams, pluginDelegate);
         } else if (this.viewName.equals(PluginDelegate.KEY_FEED_VIEW)) {
+            Log.i("FeedAdLoad", "PlatformView create" + id + "creationParams: " + creationParams);
             return new AdFeedView(context, id, creationParams, pluginDelegate);
         }
         return null;

@@ -1,6 +1,6 @@
 package com.zero.flutter_gromore_ads.load;
 
-import com.bytedance.sdk.openadsdk.TTNativeExpressAd;
+import com.bytedance.sdk.openadsdk.TTFeedAd;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -23,7 +23,7 @@ public class FeedAdManager {
     }
 
     // 信息流广告列表
-    private final Map<Integer, TTNativeExpressAd> feedAdList = new HashMap<Integer, TTNativeExpressAd>();
+    private final Map<Integer, TTFeedAd> feedAdList = new HashMap<Integer, TTFeedAd>();
 
     /**
      * 添加广告渲染对象
@@ -31,7 +31,7 @@ public class FeedAdManager {
      * @param key 广告缓存id
      * @param ad  广告渲染对象
      */
-    public void putAd(int key, TTNativeExpressAd ad) {
+    public void putAd(int key, TTFeedAd ad) {
         feedAdList.put(key, ad);
     }
 
@@ -41,7 +41,7 @@ public class FeedAdManager {
      * @param key 广告缓存id
      * @return 广告渲染对象
      */
-    public TTNativeExpressAd getAd(int key) {
+    public TTFeedAd getAd(int key) {
         return feedAdList.get(key);
     }
 
@@ -51,7 +51,7 @@ public class FeedAdManager {
      * @param key 广告缓存id
      * @return 广告渲染对象
      */
-    public TTNativeExpressAd removeAd(int key) {
+    public TTFeedAd removeAd(int key) {
         return feedAdList.remove(key);
     }
 }

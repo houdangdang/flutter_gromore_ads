@@ -5,7 +5,7 @@ export 'ad_event.dart';
 typedef OnAdEventListener = void Function(AdEvent event);
 
 /// 处理广告事件
-void hanleAdEvent(dynamic data, OnAdEventListener listener) {
+void handleAdEvent(dynamic data, OnAdEventListener listener) {
   if (data != null) {
     AdEvent adEvent = AdEvent.fromJson(data);
     listener.call(adEvent);

@@ -30,8 +30,6 @@ public class FlutterGromoreAdsPlugin implements FlutterPlugin, ActivityAware {
     eventChannel = new EventChannel(flutterPluginBinding.getBinaryMessenger(), "flutter_gromore_ads_event");
   }
 
-
-
   @Override
   public void onDetachedFromEngine(@NonNull FlutterPluginBinding binding) {
     // 解除方法通道和事件通道
@@ -46,6 +44,7 @@ public class FlutterGromoreAdsPlugin implements FlutterPlugin, ActivityAware {
     methodChannel.setMethodCallHandler(delegate);
     eventChannel.setStreamHandler(delegate);
     this.delegate.registerBannerView();
+    this.delegate.registerFeedView();
   }
 
   @Override

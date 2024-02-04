@@ -23,7 +23,7 @@ class FlutterGromoreAds {
   static Future<void> onEventListener(
       OnAdEventListener onAdEventListener) async {
     _eventChannel.receiveBroadcastStream().listen((data) {
-      hanleAdEvent(data, onAdEventListener);
+      handleAdEvent(data, onAdEventListener);
     });
   }
 
