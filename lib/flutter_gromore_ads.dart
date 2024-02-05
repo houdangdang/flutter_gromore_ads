@@ -12,16 +12,13 @@ export 'view/ad_feed_widget.dart';
 /// GroMore 广告插件
 class FlutterGromoreAds {
   // 方法通道
-  static const MethodChannel _methodChannel =
-      MethodChannel('flutter_gromore_ads');
+  static const MethodChannel _methodChannel = MethodChannel('flutter_gromore_ads');
   // 事件通道
-  static const EventChannel _eventChannel =
-      EventChannel('flutter_gromore_ads_event');
+  static const EventChannel _eventChannel = EventChannel('flutter_gromore_ads_event');
 
   ///事件回调
   ///@params onData 事件回调
-  static Future<void> onEventListener(
-      OnAdEventListener onAdEventListener) async {
+  static Future<void> onEventListener(OnAdEventListener onAdEventListener) async {
     _eventChannel.receiveBroadcastStream().listen((data) {
       handleAdEvent(data, onAdEventListener);
     });
@@ -39,8 +36,7 @@ class FlutterGromoreAds {
   /// 动态请求相关权限（仅 Android）
   static Future<bool> get requestPermissionIfNecessary async {
     if (Platform.isAndroid) {
-      final bool result =
-          await _methodChannel.invokeMethod('requestPermissionIfNecessary');
+      final bool result = await _methodChannel.invokeMethod('requestPermissionIfNecessary');
       return result;
     }
     return true;
@@ -50,8 +46,7 @@ class FlutterGromoreAds {
   /// [appId] 应用ID
   /// [config] 配置文件名称
   /// [limitPersonalAds] 是否限制个性化广告，0：不限制 1：限制
-  static Future<bool> initAd(String appId,
-      {String? config, int limitPersonalAds = 0}) async {
+  static Future<bool> initAd(String appId, {String? config, int limitPersonalAds = 0}) async {
     final bool result = await _methodChannel.invokeMethod(
       'initAd',
       {
@@ -67,8 +62,7 @@ class FlutterGromoreAds {
   /// [posId] 广告位 id
   /// [logo] 如果传值则展示底部logo，不传不展示，则全屏展示
   /// [timeout] 加载超时时间
-  static Future<bool> showSplashAd(String posId,
-      {String? logo, double timeout = 3.5}) async {
+  static Future<bool> showSplashAd(String posId, {String? logo, double timeout = 3.5}) async {
     final bool result = await _methodChannel.invokeMethod(
       'showSplashAd',
       {
@@ -94,17 +88,23 @@ class FlutterGromoreAds {
   /// [posId] 广告位 id
   /// [customData] 设置服务端验证的自定义信息
   /// [userId] 设置服务端验证的用户信息
+  /// [rewardName] 设置激励名称
+  /// [rewardAmount] 设置激励金额
   static Future<bool> showRewardVideoAd(
-      String posId, {
-        String? customData,
-        String? userId,
-      }) async {
+    String posId, {
+    String? customData,
+    String? userId,
+    String? rewardName = '分钟畅用输入法',
+    int? rewardAmount = 60,
+  }) async {
     final bool result = await _methodChannel.invokeMethod(
       'showRewardVideoAd',
       {
         'posId': posId,
         'customData': customData,
         'userId': userId,
+        'rewardName': rewardName,
+        'rewardAmount': rewardAmount,
       },
     );
     return result;
