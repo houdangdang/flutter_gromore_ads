@@ -68,6 +68,7 @@ class AdFeedView extends BaseAdPage implements PlatformView, TTNativeAd.AdIntera
         MediationNativeManager manager = fad.getMediationManager();
         if (manager == null) { return; }
         if (manager.isExpress()) {
+            Log.i(TAG, "模板feed流广告");
             // --- 模板feed流广告
             View adView = fad.getAdView();
             if (adView.getParent() != null) {

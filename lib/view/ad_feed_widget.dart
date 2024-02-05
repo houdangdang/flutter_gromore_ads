@@ -24,8 +24,7 @@ class AdFeedWidget extends StatefulWidget {
   _AdFeedWidgetState createState() => _AdFeedWidgetState();
 }
 
-class _AdFeedWidgetState extends State<AdFeedWidget>
-    with AutomaticKeepAliveClientMixin {
+class _AdFeedWidgetState extends State<AdFeedWidget> with AutomaticKeepAliveClientMixin {
   // View 类型
   final String viewType = 'flutter_gromore_ads_feed';
   // 创建参数
@@ -33,12 +32,12 @@ class _AdFeedWidgetState extends State<AdFeedWidget>
   // 通道
   late MethodChannel _channel;
   // 宽高
-  double width = 375, height = 128;
+  double adWidth = 375, adHeight = 128;
 
   @override
   void initState() {
-    this.width = widget.width;
-    this.height = widget.height;
+    adWidth = widget.width;
+    adHeight = widget.height;
     creationParams = <String, dynamic>{
       "posId": widget.posId,
     };
@@ -48,7 +47,7 @@ class _AdFeedWidgetState extends State<AdFeedWidget>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    if (!widget.show || width <= 0 || height <= 0) {
+    if (!widget.show || adWidth <= 0 || adHeight <= 0) {
       return SizedBox.shrink();
     }
     Widget view;
@@ -75,7 +74,7 @@ class _AdFeedWidgetState extends State<AdFeedWidget>
     }
     // 有宽高信息了（渲染成功了）设置对应宽高
     return SizedBox.fromSize(
-      size: Size(width, height),
+      size: Size(adWidth, adHeight),
       child: view,
     );
   }
@@ -87,8 +86,14 @@ class _AdFeedWidgetState extends State<AdFeedWidget>
     String method = call.method;
     // 设置大小
     if (method == 'setSize') {
-      width = call.arguments['width'] ?? 0;
-      height = call.arguments['height'] ?? 0;
+      final width = call.arguments['width'];
+      final height = call.arguments['height'];
+      if (width != null && width >= 0) {
+        adWidth = width;
+      }
+      if (height != null && height >= 0) {
+        adHeight = height;
+      }
       setState(() {});
     }
   }
