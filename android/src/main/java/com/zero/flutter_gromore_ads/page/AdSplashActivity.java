@@ -7,7 +7,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.FrameLayout;
 
-import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatImageView;
 
@@ -41,7 +41,7 @@ public class AdSplashActivity extends AppCompatActivity implements TTAdNative.CS
 
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         UIUtils.hideBottomUIMenu(this);
         StatusBarUtils.setTranslucent(this);

@@ -37,7 +37,6 @@ public class FlutterGromoreAdsPlugin implements FlutterPlugin, ActivityAware {
     eventChannel.setStreamHandler(null);
   }
 
-
   @Override
   public void onAttachedToActivity(@NonNull ActivityPluginBinding binding) {
     this.delegate = new PluginDelegate(binding.getActivity(), bind);
@@ -52,12 +51,10 @@ public class FlutterGromoreAdsPlugin implements FlutterPlugin, ActivityAware {
     onAttachedToActivity(binding);
   }
 
-
   @Override
   public void onDetachedFromActivityForConfigChanges() {
     onDetachedFromActivity();
   }
-
 
   @Override
   public void onDetachedFromActivity() {

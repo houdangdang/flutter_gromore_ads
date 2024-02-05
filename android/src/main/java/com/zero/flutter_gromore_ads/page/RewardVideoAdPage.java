@@ -7,9 +7,10 @@ import androidx.annotation.NonNull;
 
 import com.bytedance.sdk.openadsdk.AdSlot;
 import com.bytedance.sdk.openadsdk.TTAdConstant;
-import com.bytedance.sdk.openadsdk.TTAdManager;
 import com.bytedance.sdk.openadsdk.TTAdNative;
 import com.bytedance.sdk.openadsdk.TTRewardVideoAd;
+import com.bytedance.sdk.openadsdk.mediation.ad.MediationAdSlot;
+import com.bytedance.sdk.openadsdk.mediation.MediationConstant;
 import com.bytedance.sdk.openadsdk.TTAppDownloadListener;
 import com.zero.flutter_gromore_ads.event.AdEventAction;
 import com.zero.flutter_gromore_ads.event.AdRewardEvent;
@@ -28,17 +29,32 @@ public class RewardVideoAdPage extends BaseAdPage implements TTAdNative.RewardVi
     private String customData;
     // 设置服务端验证的用户信息
     private String userId;
+    // 设置激励名称
+    private String rewardName;
+    // 设置激励金额
+    private int rewardAmount;
 
     @Override
     public void loadAd(@NonNull MethodCall call) {
         customData = call.argument("customData");
         userId = call.argument("userId");
+        rewardName = call.argument("rewardName");
+        rewardAmount = call.argument("rewardAmount");
         // 配置广告
         adslot = new AdSlot.Builder()
                 .setCodeId(posId)
-                .setExpressViewAcceptedSize(500, 500)
+                .setOrientation(TTAdConstant.VERTICAL)
                 .setUserID(userId)//tag_id
                 .setMediaExtra(customData) //附加参数
+                .setExpressViewAcceptedSize(500, 500)
+                .setMediationAdSlot(new MediationAdSlot
+                        .Builder()
+                        .setRewardName(rewardName)
+                        .setRewardAmount(rewardAmount)
+                        .setExtraObject(MediationConstant.ADN_PANGLE, "pangleRewardCustomData")//服务端奖励验证透传参数
+                        .setExtraObject(MediationConstant.ADN_GDT, "gdtRewardCustomData")
+                        .setExtraObject(MediationConstant.ADN_BAIDU, "baiduRewardCustomData")
+                        .build())
                 .build();
         // 加载广告
         adNativeLoader.loadRewardVideoAd(adslot, this);
@@ -91,9 +107,12 @@ public class RewardVideoAdPage extends BaseAdPage implements TTAdNative.RewardVi
     @Override
     public void onAdClose() {
         Log.i(TAG, "onAdClose");
+        if (rvad != null && rvad.getMediationManager() != null) {
+            rvad.getMediationManager().destroy();
+        }
+        rvad = null;
         // 添加广告事件
         sendEvent(AdEventAction.onAdClosed);
-        rvad = null;
     }
 
     @Override
@@ -114,7 +133,6 @@ public class RewardVideoAdPage extends BaseAdPage implements TTAdNative.RewardVi
         String logString ="verify:" + rewardVerify + " amount:" + rewardAmount +
                 " name:" + rewardName + " errorCode:" + code + " errorMsg:" + msg;
         Log.e(TAG, "onRewardVerify " + logString);
-        //sendEvent(new AdRewardEvent(posId,0, rewardVerify, rewardAmount, rewardName, code, msg, customData, userId));
     }
 
     @Override

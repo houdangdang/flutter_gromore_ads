@@ -33,5 +33,4 @@ public class AdEventHandler {
             PluginDelegate.getInstance().addEvent(event.toMap());
         }
     }
-
 }

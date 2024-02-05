@@ -24,10 +24,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONException;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import io.flutter.BuildConfig;
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.plugin.common.EventChannel;
 import io.flutter.plugin.common.MethodCall;
@@ -156,7 +154,6 @@ public class PluginDelegate implements MethodChannel.MethodCallHandler, EventCha
                 .registerViewFactory(KEY_FEED_VIEW, new NativeViewFactory(KEY_FEED_VIEW, this));
     }
 
-
     /**
      * 请求权限
      *
@@ -183,8 +180,7 @@ public class PluginDelegate implements MethodChannel.MethodCallHandler, EventCha
         TTAdConfig.Builder configBuilder = new TTAdConfig.Builder()
                 .appId(appId)
                 .useMediation(true)
-                .debug(BuildConfig.DEBUG)
-                .supportMultiProcess(false);
+                .supportMultiProcess(true);
         // 离线配置
         JSONObject localConfigJson = null;
         if (!TextUtils.isEmpty(config)) {
@@ -209,7 +205,6 @@ public class PluginDelegate implements MethodChannel.MethodCallHandler, EventCha
                     .build();
         }
 
-
         // 初始化 SDK
         TTAdSdk.init(activity.getApplicationContext(),gmPangleOption);
         TTAdSdk.start(new TTAdSdk.Callback() {
@@ -219,9 +214,9 @@ public class PluginDelegate implements MethodChannel.MethodCallHandler, EventCha
             }
 
             @Override
-            public void fail(int i, String s) {
+            public void fail(int code, String msg) {
                 result.success(false);
-                Log.e(TAG, "TTAdSdk init start Error code:"+i+" msg:"+s);
+                Log.e(TAG, "TTAdSdk init start Error code:"+code+" msg:"+msg);
             }
         });
     }
