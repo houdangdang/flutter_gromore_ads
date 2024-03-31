@@ -21,10 +21,7 @@ class AdEvent {
     } else if (action == AdEventAction.onAdReward) {
       return AdRewardEvent.fromJson(json);
     } else {
-      return AdEvent(
-        adId: json['adId'],
-        action: action,
-      );
+      return AdEvent(adId: json['adId'], action: action);
     }
   }
 }
